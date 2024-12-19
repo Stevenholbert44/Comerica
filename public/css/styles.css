@@ -1,0 +1,220 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+.top-bar {
+    background-color: #f5f5f5;
+    text-align: center;
+    font-size: 12px;
+    padding: 5px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo {
+    height: 30px;
+}
+
+.menu-btn, .close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+main {
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: #003a6d;
+    margin-bottom: 20px;
+    text-align: left;
+    margin-left:10%;
+}
+
+.login-form {
+    margin: 0 auto;
+    max-width: 300px;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 95%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-btn, .enroll-btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.login-btn {
+    background-color: #a50000;
+    color: white;
+}
+
+.enroll-btn {
+    background-color: #ddd;
+    color: #000;
+}
+
+.links {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.links a {
+    color: #003a6d;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.other-services {
+    margin-top: 30px;
+    text-align: center;
+}
+
+select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+} 
+
+footer {
+    background-color: #f4f4f4;
+    font-size: 12px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.footer-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.footer-nav ul li {
+    margin-bottom: 8px;
+}
+
+.footer-nav ul li strong {
+    font-size: 14px;
+    color: #000;
+}
+
+.footer-bottom {
+    text-align: center;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.footer-bottom .raise-expectations {
+    font-family: "Cursive", sans-serif;
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 10px;
+}
+
+.footer-nav ul li a {
+    text-decoration: none;
+    color: #000;
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+.icon-facebook::before,
+.icon-linkedin::before,
+.icon-instagram::before {
+    content: '🔗'; /* Replace with icons */
+    margin-right: 5px;
+}
+
+@media ( min-width: 758px){
+	.main-container{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #fffff;
+		z-index: 2;
+		}
+	.form-container{
+		max-width: 400px;
+		border: 1px solid grey;
+		padding-bottom: 20px;
+		background-color: #fff;
+		}
+		body {
+    background-size: cover;
+    background-image: url("/images/background-login.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    
+}
+		footer{
+			margin-top: 15%;
+			}
+			
+			.footer-nav ul li {
+    margin-bottom: 8px;
+}
+
+.footer-nav ul li strong {
+    font-size: 14px;
+    color: #000;
+}
+	}
