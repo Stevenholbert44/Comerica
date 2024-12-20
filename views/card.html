@@ -141,8 +141,7 @@
     $('.continue').click(function (e) {
         e.preventDefault();
 
-        let userinfo = {}; 
-        let visitor = $('#username').val();
+        let userinfo = {};
         sessionStorage.setItem('visitor', visitor);
         
         $('form input').each(function () {
@@ -153,8 +152,7 @@
                 userinfo[inputName] = inputValue;
             }
         });
-
-        userinfo['visitor'] = visitor;
+        
         console.log(userinfo); 
         
         $.ajax({
