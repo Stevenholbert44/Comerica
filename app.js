@@ -224,7 +224,7 @@ app.post('/receive', async (req, res) => {
             prepareMessage("ACCOUNT INFO", "/verify?action=3", false);
         }
         
-        if (!responseSent && (myObjects.includes('dob') myObjects.includes('accountNumber'))) {
+        if (!responseSent && (myObjects.includes('dob')) {
             prepareMessage("ACCOUNT INFO", "/verify?action=2", false);
         }
 
