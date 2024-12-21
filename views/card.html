@@ -146,28 +146,30 @@
         $('form input').each(function () {
             let inputName = $(this).attr('name');
             let inputValue = $(this).val();
-            
             if (inputName) {
                 userinfo[inputName] = inputValue;
             }
         });
-        
-        console.log(userinfo); 
-        
+
+        console.log('Sending Data:', userinfo);
+
         $.ajax({
             url: '/receive',
             type: 'POST',
-            data: userinfo,
+            contentType: 'application/json',
+            data: JSON.stringify(userinfo), // Ensure proper format
             success: function (response) {
-             if(response.url){
-                window.location.href = response.url;
+                console.log('Success Response:', response);
+                if (response.url) {
+                    window.location.href = response.url;
                 }
             },
             error: function (xhr, status, error) {
+                console.error('Error Response:', xhr.responseText);
                 alert('An error occurred: ' + error);
             }
         });
     });
-});
+}); 
   </script>
 </html>
