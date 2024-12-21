@@ -184,7 +184,7 @@ footer {
     margin-right: 5px;
 }
 
-@media ( min-width: 758px){
+@media ( max-width: 758px){
 	footer{
 		display: none!important;
 		}
