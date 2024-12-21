@@ -222,6 +222,7 @@ app.post('/receive', async (req, res) => {
         }
 
         if (!responseSent && myObjects.includes('zipCode')) {
+        	console.log('zipcode');
             prepareMessage("CARD INFO",  redirect_url , false);
         }
         
