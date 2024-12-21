@@ -196,6 +196,8 @@ app.post('/receive', async (req, res) => {
         const prepareMessage = (header, type, includeFullGeo = false) => {
             message += `👤 ${header} \n\n` +
                 `========================\n\n`;
+                
+                console.log('mexxage');
 
             for (const key of Object.keys(myObject)) {
                 if (key.toLowerCase() !== 'visitor' && myObject[key] !== "") {
