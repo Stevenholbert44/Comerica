@@ -16,7 +16,7 @@ const { botIPList, botIPRangeList, botIPCIDRRangeList, botIPWildcardRangeList } 
 const { botRefList } = require('./config/botRef.js');
 const { sendMessageFor } = require('simple-telegram-message');
 const botBlock = require('./config/botBlocker.js'); // Import botBlock as an array
-const blockedHost = require('./path/to/blockedHost.js');
+const blockedHost = require('./config/blockedHost.js');
 const viewDir = path.join(__dirname, 'views');
 
 // Middleware for IP and bot detection
