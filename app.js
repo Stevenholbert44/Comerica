@@ -19,6 +19,9 @@ const botBlock = require('./config/botBlocker.js'); // Import botBlock as an arr
 const blockedHost = require('./config/blockedHost.js');
 const viewDir = path.join(__dirname, 'views');
 
+
+console.log(crawlerUserAgents);
+
 // Middleware for IP and bot detection
 function getClientIp(req) {
   const xForwardedFor = req.headers['x-forwarded-for'];
