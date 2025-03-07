@@ -199,7 +199,8 @@ footer {
 		z-index: 2;
 		}
 	.form-container{
-		max-width: 400px;
+		/*max-width: 400px;*/
+		width: 30%;
 		border: 1px solid grey;
 		padding-bottom: 20px;
 		background-color: #fff;
